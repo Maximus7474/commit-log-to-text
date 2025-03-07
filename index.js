@@ -23,8 +23,8 @@ const fetchCommits = async (page = 1, commits = []) => {
             ...data.map(commit => ({
                 hash: commit.sha.substring(0, 7),
                 message: commit.commit.message.split('\n')[0],
-                author: commit.commit.author.name,
-                autorId: commit.commit.author.id,
+                author: commit.author.login,
+                autorId: commit.author.id,
                 date: new Date(commit.commit.author.date).toLocaleString()
             })),
         ];
@@ -42,10 +42,24 @@ fetchCommits()
 
     const header = `\n==== Commit Log for: ${OWNER}/${REPO}  ====`;
     console.log(header);
+    console.log('\n- Commit Count:', commits.length);
+    
+    // Contributor Statistics
+    let contributors = {};
     commits.forEach(commit => {
-        console.log(`\n- ${commit.hash} - ${commit.message}`);
-        console.log(`   By: ${commit.author} on ${commit.date}`);
-    });
+        if (!contributors[commit.autorId]) contributors[commit.autorId] = {
+            commits: 0,
+            name: commit.author,
+        };
+
+        contributors[commit.autorId].commits++; 
+    })
+
+    console.log(`- ${Object.keys(contributors).length} Contributors:\n${Object.keys(contributors).map(id => {
+        const { name, commits } = contributors[id];
+        return `  - ${name.padEnd(20)}: ${String(commits).padEnd(4)} commit${commits > 1 ? 's' : ''}\n`;
+    }).join('')}`);
+
     console.log(`\n${"=".repeat(header.length - 1)}\n`);
 });
 
