@@ -22,9 +22,6 @@ const fetchCommits = async (page = 1, commits = []) => {
         commits = [
             ...commits,
             ...data
-                .filter(commit => 
-                    !commit.commit.message.startsWith("Merge pull request")
-                )
                 .map(commit => ({
                     hash: commit.sha.substring(0, 7),
                     message: commit.commit.message.split('\n')[0],
@@ -47,7 +44,11 @@ fetchCommits()
     
     // Contributor Statistics
     let contributors = {};
-    commits.forEach(commit => {
+    commits
+        .filter(commit => 
+            !commit.message.startsWith("Merge pull request")
+        )
+        .forEach(commit => {
         if (!contributors[commit.autorId]) contributors[commit.autorId] = {
             commits: 0,
             name: commit.author,
@@ -55,6 +56,11 @@ fetchCommits()
 
         contributors[commit.autorId].commits++; 
     });
+
+    // Merged pull requests
+    let mergeRequets = commits.filter(commit => 
+        commit.message.startsWith("Merge pull request")
+    ).length
 
     console.log("\x1b[32m\n" +
         "  ____                          _ _     _                \n" +
@@ -67,6 +73,7 @@ fetchCommits()
         ` - Loaded for \x1b[34m${OWNER}/${REPO}\x1b[0m\n`+
         ` - Found \x1b[32m${commits.length}\x1b[0m commits\n`+
         ` - Found \x1b[32m${Object.keys(contributors).length}\x1b[0m contributors\n`+
+        ` - Found \x1b[32m${mergeRequets}\x1b[0m Merged pull requests\n`+
         "\n"+
         "\x1b[33mGenerating Output\x1b[0m"
     );
@@ -75,6 +82,7 @@ fetchCommits()
     let output = header;
 
     output += `\n- Commit Count: ${commits.length}\n`;
+    output += `- ${mergeRequets} Merged pull requests\n`;
 
     output += `- ${Object.keys(contributors).length} Contributors:\n${Object.keys(contributors).map(id => {
         const { name, commits } = contributors[id];
