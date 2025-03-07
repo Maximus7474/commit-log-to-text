@@ -90,6 +90,8 @@ fetchCommits()
         output += `  By: ${commit.author} on ${commit.date}\n`;
     });
 
+    output += "\n\nGenerated with: https://github.com/Maximus7474/commit-log-to-text"
+
     fs.writeFile('output/commit_log.txt', output, (err) => {
         if (err) return console.error('[\x1b[31mERROR\x1b[0m] Writing to file:\n\x1b[31m', err.message,'\x1b[0m\n', err);
 
