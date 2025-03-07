@@ -71,6 +71,7 @@ fetchCommits()
         "                                                     |___/  \n"+
         "\x1b[0m\n"+
         ` - Loaded for \x1b[34m${OWNER}/${REPO}\x1b[0m\n`+
+        `   - On the branch: \x1b[35m${BRANCH}\x1b[0m\n`+
         ` - Found \x1b[32m${commits.length}\x1b[0m commits\n`+
         ` - Found \x1b[32m${Object.keys(contributors).length}\x1b[0m contributors\n`+
         ` - Found \x1b[32m${mergeRequets}\x1b[0m Merged pull requests\n`+
@@ -80,6 +81,7 @@ fetchCommits()
 
     const header = `\n==== Commit Log for: ${OWNER}/${REPO}  ====\n`;
     let output = header;
+    output += ` -> Statistics for the branch: ${BRANCH}\n`;
 
     output += `\n- Commit Count: ${commits.length}\n`;
     output += `- ${mergeRequets} Merged pull requests\n`;
