@@ -52,6 +52,21 @@ fetchCommits()
         contributors[commit.autorId].commits++; 
     });
 
+    console.log("\x1b[32m\n" +
+        "  ____                          _ _     _                \n" +
+        " / ___|___  _ __ ___  _ __ ___ (_) |_  | |    ___   __ _ \n" +
+        "| |   / _ \\| '_ ` _ \\| '_ ` _ \\| | __| | |   / _ \\ / _` |\n" +
+        "| |__| (_) | | | | | | | | | | | | |_  | |__| (_) | (_| |\n" +
+        " \\____\\___/|_| |_| |_|_| |_| |_|_|\\__| |_____\\___/ \\__, |\n" +
+        "                                                     |___/  \n"+
+        "\x1b[0m\n"+
+        ` - Loaded for \x1b[34m${OWNER}/${REPO}\x1b[0m\n`+
+        ` - Found \x1b[32m${commits.length}\x1b[0m commits\n`+
+        ` - Found \x1b[32m${Object.keys(contributors).length}\x1b[0m contributors\n`+
+        "\n"+
+        "\x1b[33mGenerating Output\x1b[0m"
+    );
+
     const header = `\n==== Commit Log for: ${OWNER}/${REPO}  ====\n`;
     let output = header;
 
