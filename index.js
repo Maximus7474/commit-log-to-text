@@ -1,3 +1,4 @@
+const fs = require('fs');
 require('dotenv').config();
 
 const { OWNER, REPO, BRANCH, GITHUB_TOKEN = null } = process.env;
@@ -29,7 +30,7 @@ const fetchCommits = async (page = 1, commits = []) => {
             })),
         ];
 
-        return fetchCommits(page + 1, commits);
+        return commits; // fetchCommits(page + 1, commits);
     } catch (error) {
         console.error('Error fetching commits:', error.message);
     }
@@ -39,10 +40,6 @@ fetchCommits()
 .then(commits => {
 
     if (!commits) return console.error('Failed to retrieve commits.');
-
-    const header = `\n==== Commit Log for: ${OWNER}/${REPO}  ====`;
-    console.log(header);
-    console.log('\n- Commit Count:', commits.length);
     
     // Contributor Statistics
     let contributors = {};
@@ -53,14 +50,25 @@ fetchCommits()
         };
 
         contributors[commit.autorId].commits++; 
-    })
+    });
 
-    console.log(`- ${Object.keys(contributors).length} Contributors:\n${Object.keys(contributors).map(id => {
+    const header = `\n==== Commit Log for: ${OWNER}/${REPO}  ====\n`;
+    let output = header;
+
+    output += `\n- Commit Count: ${commits.length}\n`;
+
+    output += `- ${Object.keys(contributors).length} Contributors:\n${Object.keys(contributors).map(id => {
         const { name, commits } = contributors[id];
         return `  - ${name.padEnd(20)}: ${String(commits).padEnd(4)} commit${commits > 1 ? 's' : ''}\n`;
-    }).join('')}`);
+    }).join('')}`;
 
-    console.log(`\n${"=".repeat(header.length - 1)}\n`);
+    output += `\n${"=".repeat(header.length - 1)}\n`;
+
+    fs.writeFile('output/commit_log.txt', output, (err) => {
+        if (err) return console.error('[\x1b[31mERROR\x1b[0m] Writing to file:\n\x1b[31m', err.message,'\x1b[0m\n', err);
+
+        console.log('[\x1b[32mSUCESS\x1b[0m]Commit log has been saved to output/commit_log.txt');
+    });
 });
 
 
