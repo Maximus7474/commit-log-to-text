@@ -21,13 +21,17 @@ const fetchCommits = async (page = 1, commits = []) => {
 
         commits = [
             ...commits,
-            ...data.map(commit => ({
-                hash: commit.sha.substring(0, 7),
-                message: commit.commit.message.split('\n')[0],
-                author: commit.author.login,
-                autorId: commit.author.id,
-                date: new Date(commit.commit.author.date).toLocaleString()
-            })),
+            ...data
+                .filter(commit => 
+                    !commit.commit.message.startsWith("Merge pull request")
+                )
+                .map(commit => ({
+                    hash: commit.sha.substring(0, 7),
+                    message: commit.commit.message.split('\n')[0],
+                    author: commit.author.login,
+                    autorId: commit.author.id,
+                    date: new Date(commit.commit.author.date).toLocaleString()
+                })),
         ];
 
         return fetchCommits(page + 1, commits);
