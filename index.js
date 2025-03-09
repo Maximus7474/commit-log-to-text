@@ -83,6 +83,18 @@ fetchCommits()
     let output = header;
     output += ` -> Statistics for the branch: ${BRANCH}\n`;
 
+    const date = new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    }).format(new Date());
+    output += ` -> Recap date: ${date}\n`;
+
+    output += `\n${" ".repeat(Math.floor((header.length - 1) * 0.3))}======== Overview =======\n`;
+
     output += `\n- Commit Count: ${commits.length}\n`;
     output += `- ${mergeRequets} Merged pull requests\n`;
 
@@ -91,8 +103,6 @@ fetchCommits()
         return `  - ${name.padEnd(20)}: ${String(commits).padEnd(4)} commit${commits > 1 ? 's' : ''}\n`;
     }).join('')}`;
 
-    output += `\n${"=".repeat(header.length - 1)}\n`;
-    
     output += `\n${" ".repeat(Math.floor((header.length - 1) * 0.3))}==== Full Commit Log ====\n`;
 
     commits.forEach(commit => {
